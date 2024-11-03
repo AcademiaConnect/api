@@ -5,7 +5,10 @@ from dotenv import load_dotenv
 
 def get_event_by_gpt(input) -> dict:
     # definindo a chave da api, alterar aqui
+    
+    #aqui usei o dotenv, alterar depois
     load_dotenv()
+    
     openai.api_key = os.getenv('OPENAI_API_KEY')
 
     # prompt para o api
