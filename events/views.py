@@ -6,6 +6,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Events
 from rest_framework import status
 from rest_framework.response import Response
+from .controllers import get_event_by_gpt
 
 
 class EventView(APIView):
@@ -43,3 +44,17 @@ class EventView(APIView):
         event_serializer  = EventSerializers(events, many=True)
 
         return Response(data=event_serializer.data, status=status.HTTP_200_OK)
+
+class EventAutoFillView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        text = request.data.get('text')
+
+        if not text:
+            return Response({'message': 'Text not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        autoFill = get_event_by_gpt(text)
+
+        return Response(autoFill, status=status.HTTP_200_OK)
