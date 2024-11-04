@@ -1,4 +1,3 @@
-```markdown
 # 🌐 API Project
 
 Bem-vindo ao repositório **API**! Este é um projeto privado que contém funcionalidades essenciais de autenticação, eventos e gestão de usuários.
