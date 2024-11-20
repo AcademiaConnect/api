@@ -26,12 +26,11 @@ class UserView(APIView):
         username = serializer.validated_data.get('username')
         encrypted_password = serializer.validated_data.get('password')
 
-        key = config('KEY_CRYPTOGRAPHY')
-        iv = config('IV_CRYPTOGRAPHY')
+        key = config('KEY_CRYPTOGRAPHY').encode('utf-8')
+        iv = config('IV_CRYPTOGRAPHY').encode('utf-8')
 
-        # cipher = AES.new(key, AES.MODE_CBC, iv)
-        # decrypted_password = unpad(cipher.decrypt(b64decode(encrypted_password)), AES.block_size).decode('utf-8')
-        decrypted_password = 'admin'
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        decrypted_password = unpad(cipher.decrypt(b64decode(encrypted_password)), AES.block_size).decode('utf-8')
 
         user = User.objects.filter(username=username).first()
 
