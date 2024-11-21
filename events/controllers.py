@@ -1,6 +1,7 @@
 import openai
 import os
 import json
+from datetime import date
 from dotenv import load_dotenv
 
 def get_event_by_gpt(input) -> dict:
@@ -36,6 +37,8 @@ def get_event_by_gpt(input) -> dict:
                 }}    
 
                 Se alguma informação não estiver presente ou for incompleta, deixe o campo como null. Pode ser bem criativo na descrição, limitando os caracteres até 230.
+
+                Caso seja solicitado alguma data, hoje é {str(date.today())}
             """
 
     # requisição para a api
