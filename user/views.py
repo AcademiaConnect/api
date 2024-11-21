@@ -26,8 +26,8 @@ class UserView(APIView):
         username = serializer.validated_data.get('username')
         encrypted_password = serializer.validated_data.get('password')
 
-        key = config('KEY_CRYPTOGRAPHY').encode('utf-8')
-        iv = config('IV_CRYPTOGRAPHY').encode('utf-8')
+        key = config('KEY_CRYPTOGRAPHY').encode()
+        iv = config('IV_CRYPTOGRAPHY').encode()
 
         cipher = AES.new(key, AES.MODE_CBC, iv)
         decrypted_password = unpad(cipher.decrypt(b64decode(encrypted_password)), AES.block_size).decode('utf-8')

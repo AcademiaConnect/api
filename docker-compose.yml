@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  postgres-academiaconnect:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - postgres-academiaconnect-volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: academiaconnect
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1q2w3e!
+    networks:
+      - academiaconnect-network
+
+  django_gunicorn:
+    restart: always
+    volumes:
+      - ./static:/app/static
+      - ./media:/app/media
+    env_file:
+      - .env
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres-academiaconnect
+    networks:
+      - academiaconnect-network
+
+  nginx:
+    restart: always
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - django_gunicorn
+    volumes:
+      - ./static:/static
+      - ./media:/media
+      - /etc/ssl/certs/nginx-selfsigned.crt:/etc/ssl/certs/nginx-selfsigned.crt
+      - /etc/ssl/private/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key
+    networks:
+      - academiaconnect-network
+
+volumes: 
+  postgres-academiaconnect-volume:
+  static:
+  media:
+
+networks:
+  academiaconnect-network:

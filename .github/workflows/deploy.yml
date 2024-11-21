@@ -1,0 +1,58 @@
+name: Deploy para Servidor
+
+on:
+  push:
+    branches:
+      - main  # Ou outra branch de deploy
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout do repositório
+    - name: Checkout do Código
+      uses: actions/checkout@v3
+
+    # Configuração do SSH
+    - name: Configurar SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+    # Garantir Diretório no Servidor
+    - name: Garantir Diretório no Servidor
+      run: |
+        ssh -o StrictHostKeyChecking=no root@165.227.79.123 "
+        rm -rf /AcademiaConnect &&
+        mkdir -p /AcademiaConnect
+        "
+
+    # Subir Arquivos para o Servidor
+    - name: Subir Arquivos para o Servidor
+      run: |
+        scp -o StrictHostKeyChecking=no -r ./* root@165.227.79.123:/AcademiaConnect/
+      
+    - name: Criar .env no Servidor
+      run: |
+        ssh -o StrictHostKeyChecking=no root@165.227.79.123 "
+        echo 'DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}' > /AcademiaConnect/.env &&
+        echo 'HOST_DATABASE=${{ secrets.HOST_DATABASE }}' >> /AcademiaConnect/.env &&
+        echo 'NAME_DATABASE=${{ secrets.NAME_DATABASE }}' >> /AcademiaConnect/.env &&
+        echo 'USER_DATABASE=${{ secrets.USER_DATABASE }}' >> /AcademiaConnect/.env &&
+        echo 'PASSWORD_DATABASE=${{ secrets.PASSWORD_DATABASE }}' >> /AcademiaConnect/.env &&
+        echo 'KEY_CRYPTOGRAPHY=${{ secrets.KEY_CRYPTOGRAPHY }}' >> /AcademiaConnect/.env &&
+        echo 'IV_CRYPTOGRAPHY=${{ secrets.IV_CRYPTOGRAPHY }}' >> /AcademiaConnect/.env &&
+        echo 'OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}' >> /AcademiaConnect/.env
+        echo 'SUPER_USER_NAME=${{ secrets.SUPER_USER_NAME }}' >> /AcademiaConnect/.env
+        echo 'SUPER_USER_PASSWORD=${{ secrets.SUPER_USER_PASSWORD }}' >> /AcademiaConnect/.env
+        "
+
+    # Construir e Rodar Docker no Servidor
+    - name: Construir e Rodar Docker no Servidor
+      run: |
+        ssh -o StrictHostKeyChecking=no root@165.227.79.123 "
+        cd /AcademiaConnect &&
+        docker-compose down &&
+        docker-compose up -d --build
+        "
