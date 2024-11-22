@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 
 class EventSerializers(serializers.Serializer):
+    id = serializers.CharField(required=False)
     title = serializers.CharField()
     dateInitial = serializers.DateTimeField()
     dateFinal = serializers.DateTimeField()
