@@ -17,6 +17,7 @@ idna==3.10
 jiter==0.7.0
 openai==1.54.3
 packaging==24.2
+psycopg2-binary==2.9.9
 pycryptodome==3.21.0
 pydantic==2.9.2
 pydantic_core==2.23.4
