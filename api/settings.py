@@ -13,10 +13,17 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),  # Token de acesso válido por 6 horas
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Token de atualização válido por 7 dias
+    'ROTATE_REFRESH_TOKENS': True,               # Gera um novo refresh token a cada uso
+    'BLACKLIST_AFTER_ROTATION': True,            # Blacklist o antigo refresh token após rotação
+}
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -160,3 +167,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     'http://159.65.248.88'
 ]
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=6),  # Token de acesso válido por 6 horas
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # Token de atualização válido por 7 dias
+    'ROTATE_REFRESH_TOKENS': True,               # Gera um novo refresh token a cada uso
+    'BLACKLIST_AFTER_ROTATION': True,            # Blacklist o antigo refresh token após rotação
+}
